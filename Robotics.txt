@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://neels-the-pirate.github.io/fine-laban/sitemap.xml
