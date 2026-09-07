@@ -3,123 +3,110 @@ let selectedPrice = 0;
 let selectedImage = "";
 let quantity = 1;
 
+const VENDOR_PHONE = "919876543210";
 
-function orderItem(itemName, price) {
+// --- Menu View Toggle ---
+function toggleMenu() {
+    const hiddenSection = document.getElementById('moreMenuSection');
+    const toggleBtn = document.getElementById('toggleMenuBtn');
 
-    const phone = "919876543210";
+    if (!hiddenSection || !toggleBtn) return;
 
-    const message =
-`🍰 Fine Laban
-
-Hello!
-
-I would like to order.
-
-Dessert : ${itemName}
-
-Price : ₹${price}
-
-Quantity : 1
-
-Please confirm availability.
-
-Thank you.`;
-
-    const url =
-`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-    window.open(url,"_blank");
-
+    if (hiddenSection.classList.contains('d-none')) {
+        hiddenSection.classList.remove('d-none');
+        toggleBtn.innerHTML = 'Show Less <i class="fas fa-chevron-up ml-2"></i>';
+    } else {
+        hiddenSection.classList.add('d-none');
+        toggleBtn.innerHTML = 'View All Menu <i class="fas fa-chevron-down ml-2"></i>';
+    }
 }
-function openOrderModal(name, price, image) {
 
+// --- Order Modal Logic ---
+function openOrderModal(name, price, image) {
     selectedItem = name;
     selectedPrice = price;
     selectedImage = image;
     quantity = 1;
 
-    document.getElementById("modalTitle").innerHTML = name;
-    document.getElementById("modalPrice").innerHTML = "₹" + price;
+    document.getElementById("modalTitle").innerText = name;
+    document.getElementById("modalPrice").innerText = "₹" + price;
     document.getElementById("modalImage").src = image;
 
-    document.getElementById("qty").innerHTML = quantity;
-    document.getElementById("totalPrice").innerHTML = price;
+    document.getElementById("qty").innerText = quantity;
+    document.getElementById("totalPrice").innerText = price;
 
     document.getElementById("orderModal").style.display = "flex";
 }
+
 function increaseQty() {
-
     quantity++;
-
     updateTotal();
-
 }
 
 function decreaseQty() {
-
     if (quantity > 1) {
-
         quantity--;
-
         updateTotal();
-
     }
-
 }
 
 function updateTotal() {
+    document.getElementById("qty").innerText = quantity;
+    document.getElementById("totalPrice").innerText = selectedPrice * quantity;
+}
 
-    document.getElementById("qty").innerHTML = quantity;
-
-    document.getElementById("totalPrice").innerHTML = selectedPrice * quantity;
-
+function resetOrderForm() {
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerPhone").value = "";
+    document.getElementById("customerAddress").value = "";
+    document.getElementById("customerNote").value = "";
 }
 
 function closeModal() {
-
     document.getElementById("orderModal").style.display = "none";
-
+    resetOrderForm();
 }
-function sendWhatsApp(){
 
-    const phone="919876543210";
+// Close modal when tapping/clicking backdrop
+window.addEventListener("click", function(event) {
+    const modal = document.getElementById("orderModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+});
 
-    const name=document.getElementById("customerName").value;
+// --- WhatsApp Dispatch ---
+function sendWhatsApp() {
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
+    const note = document.getElementById("customerNote").value.trim();
 
-    const customerPhone=document.getElementById("customerPhone").value;
+    if (!name || !phone || !address) {
+        alert("Please fill in your name, phone number, and delivery address.");
+        return;
+    }
 
-    const address=document.getElementById("customerAddress").value;
+    const total = selectedPrice * quantity;
 
-    const note=document.getElementById("customerNote").value;
-
-    const total=selectedPrice*quantity;
-
-    const message=`🍰 Fine Laban
+    const message = 
+`🍰 Fine Laban
 
 Customer : ${name}
-
-Phone : ${customerPhone}
-
-Address :
-${address}
+Phone : ${phone}
+Address : ${address}
 
 Dessert : ${selectedItem}
-
 Price : ₹${selectedPrice}
-
 Quantity : ${quantity}
-
 Total : ₹${total}
-
-Special Note :
-${note}
-
+${note ? `Special Note : ${note}\n` : ""}
 Please confirm availability.
 
 Thank you.`;
 
-    window.open(
-`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-"_blank");
+    const url = `https://wa.me/${VENDOR_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
 
+    closeModal();
 }
