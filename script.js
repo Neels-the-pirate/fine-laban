@@ -6,7 +6,7 @@ let quantity = 1;
 
 function orderItem(itemName, price) {
 
-    const phone = "917306600733"; // உங்கள் WhatsApp Number
+    const phone = "919876543210";
 
     const message =
 `🍰 Fine Laban
@@ -82,7 +82,7 @@ function closeModal() {
 }
 function sendWhatsApp(){
 
-    const phone="917306600733"; // உங்கள் WhatsApp Number
+    const phone="919876543210";
 
     const name=document.getElementById("customerName").value;
 
